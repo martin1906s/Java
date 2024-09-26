@@ -1,7 +1,7 @@
 package com.krakedev;
 
 public class TestProduto {
-
+	
 	public static void main(String[] args) {
 		Producto productoA=new Producto();
 		Producto productoB=new Producto();
