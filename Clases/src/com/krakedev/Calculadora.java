@@ -24,4 +24,7 @@ public class Calculadora {
 		double resultado=(valor1+valor2+valor3)/3;
 		return resultado;
 	}
+	public void mostrarResultado() {
+		System.out.println("Ahora no joven, Salí al almuerzo. Regreso en 15min.");
+	}
 }
