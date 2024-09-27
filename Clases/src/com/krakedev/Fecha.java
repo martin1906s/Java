@@ -5,6 +5,10 @@ public class Fecha {
 	private int mes;
 	private int dia;
 	
+	public Fecha(int mes) {
+		this.mes=mes;
+	}
+	
 	public int getAnio() {
 		return anio;
 	}

@@ -6,6 +6,14 @@ public class Producto {
 	private double precio;
 	private int stockActual;
 	
+	public Producto(String nombre) {
+		this.nombre=nombre;
+	}
+	public Producto(String nombre, int stock) {
+		this.nombre=nombre;
+		this.stockActual=stock;
+	}
+	
 	public String getNombre() {
 		return nombre;
 	}

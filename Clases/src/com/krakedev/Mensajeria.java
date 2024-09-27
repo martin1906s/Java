@@ -3,6 +3,10 @@ package com.krakedev;
 public class Mensajeria {
 	private String nombre;
 	private String apellido;
+	
+	public Mensajeria(String nombre) {
+		this.nombre=nombre;
+	}
 
 	public String getNombre() {
 		return nombre;

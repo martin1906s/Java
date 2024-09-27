@@ -3,21 +3,17 @@ package com.krakedev;
 public class TestProduto {
 	
 	public static void main(String[] args) {
-		Producto productoA=new Producto();
-		Producto productoB=new Producto();
-		Producto productoC=new Producto();
+		Producto productoA=new Producto("Paracetamol");
+		Producto productoB=new Producto("Ibuprofeno",12);
+		Producto productoC=new Producto("Curita");
 		
-		productoA.setNombre("Paracetamol");
 		productoA.setPrecio(1.25);
-		productoA.setStockActual(50);;
+		productoA.setStockActual(50);
 		productoA.setDescripcion("Pastilla");
 		
-		productoB.setNombre("Ibuprofeno");
 		productoB.setPrecio(1.50);
-		productoB.setStockActual(12);
 		productoB.setDescripcion("Pastilla");
 		
-		productoC.setNombre("Curita");
 		productoC.setPrecio(0.50);
 		productoC.setStockActual(2);
 		productoC.setDescripcion("Bandita");

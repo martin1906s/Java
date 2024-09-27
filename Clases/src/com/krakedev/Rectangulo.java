@@ -3,7 +3,7 @@ package com.krakedev;
 public class Rectangulo {
 	private int area;
 	private int perimetro;
-		
+	
 	public int getArea() {
 		return area;
 	}
