@@ -9,7 +9,6 @@ public class TestBuscarMenores {
     public static void main(String[] args) {
         MaquinaDulces maquina = new MaquinaDulces();
 
-        // Crear y agregar celdas con productos
         Producto producto1 = new Producto("P001", "Papitas", 0.85);
         Producto producto2 = new Producto("D001", "Doritos", 0.5);
         Producto producto3 = new Producto("J001", "Jet", 0.25);
@@ -31,7 +30,6 @@ public class TestBuscarMenores {
         maquina.cargarProducto(producto5, "C1", 1);
         maquina.cargarProducto(producto6, "C2", 0);
 
-        // Buscar productos menores a 0.8 y imprimir
         maquina.buscarMenores(4);
     }
 }
