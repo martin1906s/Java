@@ -32,7 +32,7 @@ public class Alarma {
 	}
 	@Override
 	public String toString() {
-		return Util.formatearDia(dia) + ", " + Util.formatearHora(hora) + ":" + minuto + "\n";
+		return Util.formatearDia(dia) + ", " + Util.formatearHora(hora) + ":" + minuto + "	\n";
 	}
 	
 }
