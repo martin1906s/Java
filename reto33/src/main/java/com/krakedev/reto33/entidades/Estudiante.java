@@ -67,7 +67,9 @@ public class Estudiante{
 		return cedula;
 	}
 
-
+	public void setCedula(String cedula) {
+		this.cedula = cedula;
+	}
 	public Profesor getCodigoProf() {
 		return codigoProf;
 	}
@@ -77,7 +79,7 @@ public class Estudiante{
 	@Override
 	public String toString() {
 		return "Estudiante [cedula=" + cedula + ", nombre=" + nombre + ", apellido=" + apellido + ", email=" + email
-				+ ", fechaNac=" + fechaNac + ", codigoProf=" + codigoProf + "]";
+				+ ", fechaNac=" + fechaNac + ", codigoProf=" + codigoProf + "]\n";
 	}
 
 	
