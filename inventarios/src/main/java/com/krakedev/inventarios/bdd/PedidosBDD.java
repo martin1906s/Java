@@ -6,6 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -32,28 +33,29 @@ public class PedidosBDD {
 			ps.setString(3, "S");
 			ps.executeUpdate();
 			rsClave = ps.getGeneratedKeys();
-			
+
 			if (rsClave.next()) {
 				codigoCabecera = rsClave.getInt(1);
 			}
-			
-			ArrayList<DetallePedido> detallesPedido=pedido.getDetalles();
+
+			ArrayList<DetallePedido> detallesPedido = pedido.getDetalles();
 			DetallePedido det;
-			for(int i=0; i<detallesPedido.size();i++) {
-				det=detallesPedido.get(i);
-				psDet=con.prepareStatement("insert into detalle_pedido(cabecera_pedido,producto,cantidad_solicitada,subtotal,cantida_recibida) values(?,?,?,?,?)");
+			for (int i = 0; i < detallesPedido.size(); i++) {
+				det = detallesPedido.get(i);
+				psDet = con.prepareStatement(
+						"insert into detalle_pedido(cabecera_pedido,producto,cantidad_solicitada,subtotal,cantida_recibida) values(?,?,?,?,?)");
 				psDet.setInt(1, codigoCabecera);
 				psDet.setInt(2, det.getProducto().getCodigo());
 				psDet.setInt(3, det.getCantidad());
-				BigDecimal pv =det.getProducto().getPrecioVenta();
-				BigDecimal cantidad= new BigDecimal(det.getCantidad());
-				BigDecimal subtotal=pv.multiply(cantidad);
+				BigDecimal pv = det.getProducto().getPrecioVenta();
+				BigDecimal cantidad = new BigDecimal(det.getCantidad());
+				BigDecimal subtotal = pv.multiply(cantidad);
 				psDet.setBigDecimal(4, subtotal);
 				psDet.setInt(5, 0);
-				
+
 				psDet.executeUpdate();
 			}
-			
+
 		} catch (KrakedevException e) {
 			e.printStackTrace();
 			throw e;
@@ -62,36 +64,46 @@ public class PedidosBDD {
 			throw new KrakedevException("Error al agregar Pedidos. Detalle: " + e.getMessage());
 		}
 	}
-	
+
 	public void actualizar(Pedido pedido) throws KrakedevException {
-	    Connection con = null;
-	    PreparedStatement psCabecera = null;
-	    PreparedStatement psDetalle = null;
+		Connection con = null;
+		PreparedStatement psCabecera = null;
+		PreparedStatement psDetalle = null;
+		PreparedStatement psHistorial = null;
+		Date fechaActual = new Date();
+		Timestamp fechaHoraActual= new Timestamp(fechaActual.getTime());
+		try {
+			con = ConexionBDD.obtenerConexion();
 
-	    try {
-	        con = ConexionBDD.obtenerConexion();
+			psCabecera = con.prepareStatement("update cabecera_pedido set estado = 'R' where numero_pedido = ?");
+			psCabecera.setInt(1, pedido.getNumeroPedido());
+			psCabecera.executeUpdate();
 
-	        psCabecera = con.prepareStatement("update cabecera_pedido set estado = 'R' where numero_pedido = ?");
-	        psCabecera.setInt(1, pedido.getNumeroPedido());
-	        psCabecera.executeUpdate();
+			ArrayList<DetallePedido> detalles = pedido.getDetalles();
+			for (int i = 0; i < detalles.size(); i++) {
+				DetallePedido detalle = detalles.get(i);
+				psDetalle = con.prepareStatement(
+						"update detalle_pedido set cantida_recibida = ?, subtotal = ? where codigo = ?");
+				psDetalle.setInt(1, detalle.getCantidadRecibida());
+				BigDecimal subtotal = detalle.getProducto().getPrecioVenta()
+						.multiply(new BigDecimal(detalle.getCantidadRecibida()));
+				psDetalle.setBigDecimal(2, subtotal);
+				psDetalle.setInt(3, detalle.getCodigo());
+				psDetalle.executeUpdate();
+				psHistorial=con.prepareStatement("insert into historial_stock(fecha,referencia,producto,cantidad)\r\n"
+						+ "values(?,?,?,?)");
+				psHistorial.setTimestamp(1, fechaHoraActual);
+				psHistorial.setString(2, "Pedido "+pedido.getNumeroPedido());
+				psHistorial.setInt(3, detalle.getProducto().getCodigo());
+				psHistorial.setInt(4,detalle.getCantidadRecibida());
+				psHistorial.executeUpdate();
 
-	        ArrayList<DetallePedido> detalles = pedido.getDetalles();
-	        for (int i = 0; i < detalles.size(); i++) {
-	            DetallePedido detalle = detalles.get(i);
-	            psDetalle = con.prepareStatement(
-	                "update detalle_pedido set cantida_recibida = ?, subtotal = ? where codigo = ?");
-	            psDetalle.setInt(1, detalle.getCantidadRecibida());
-	            BigDecimal subtotal = detalle.getProducto().getPrecioVenta()
-	                                   .multiply(new BigDecimal(detalle.getCantidadRecibida()));
-	            psDetalle.setBigDecimal(2, subtotal);
-	            psDetalle.setInt(3, detalle.getCodigo());
-	            psDetalle.executeUpdate();
-	        }
+			}
 
-	    } catch (SQLException e) {
-	        e.printStackTrace();
-	        throw new KrakedevException("Error al actualizar el pedido. Detalle: " + e.getMessage());
-	    } finally {
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new KrakedevException("Error al actualizar el pedido. Detalle: " + e.getMessage());
+		} finally {
 			if (con != null) {
 				try {
 					con.close();
@@ -101,5 +113,5 @@ public class PedidosBDD {
 			}
 		}
 	}
-	
+
 }
