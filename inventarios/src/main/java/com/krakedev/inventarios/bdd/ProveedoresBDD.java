@@ -20,18 +20,19 @@ public class ProveedoresBDD {
 		Proveedor proveedor = null;
 		try {
 			con = ConexionBDD.obtenerConexion();
-			ps = con.prepareStatement("select prov.identificador,prov.tipo_documento, td.descripcion, prov.nombre,prov.telefono,prov.correo,prov.direccion from proveedores prov,tipo_documento td where prov.tipo_documento = td.codigo and upper(prov.nombre) like ?");
+			ps = con.prepareStatement(
+					"select prov.identificador,prov.tipo_documento, td.descripcion, prov.nombre,prov.telefono,prov.correo,prov.direccion from proveedores prov,tipo_documento td where prov.tipo_documento = td.codigo and upper(prov.nombre) like ?");
 			ps.setString(1, "%" + subCadena.toUpperCase() + "%");
 			rs = ps.executeQuery();
 			while (rs.next()) {
 				String identificador = rs.getString("identificador");
 				String tipoDocumento = rs.getString("tipo_documento");
-				String descripcionTD=rs.getString("descripcion");
+				String descripcionTD = rs.getString("descripcion");
 				String nombre = rs.getString("nombre");
 				String telefono = rs.getString("telefono");
 				String correo = rs.getString("correo");
 				String direccion = rs.getString("direccion");
-				TipoDocumento td= new TipoDocumento(tipoDocumento, descripcionTD);
+				TipoDocumento td = new TipoDocumento(tipoDocumento, descripcionTD);
 				proveedor = new Proveedor(identificador, td, nombre, telefono, correo, direccion);
 				proveedores.add(proveedor);
 			}
@@ -44,14 +45,13 @@ public class ProveedoresBDD {
 		}
 		return proveedores;
 	}
-	
-	
-	
+
 	public void insertar(Proveedor prov) throws KrakedevException {
 		Connection con = null;
 		try {
 			con = ConexionBDD.obtenerConexion();
-			PreparedStatement ps = con.prepareStatement("insert into proveedores(identificador,tipo_documento,nombre,telefono,correo,direccion) values(?,?,?,?,?,?)");
+			PreparedStatement ps = con.prepareStatement(
+					"insert into proveedores(identificador,tipo_documento,nombre,telefono,correo,direccion) values(?,?,?,?,?,?)");
 			ps.setString(1, prov.getIdentificador());
 			ps.setString(2, prov.getTipoDocumento().getCodigo());
 			ps.setString(3, prov.getNombre());
@@ -62,7 +62,7 @@ public class ProveedoresBDD {
 
 		} catch (SQLException e) {
 			e.printStackTrace();
-			throw new KrakedevException("Error al insertar el Proveedor. Detalle: "+e.getMessage());
+			throw new KrakedevException("Error al insertar el Proveedor. Detalle: " + e.getMessage());
 		} catch (KrakedevException e) {
 			throw e;
 		} finally {
@@ -75,5 +75,55 @@ public class ProveedoresBDD {
 			}
 		}
 
+	}
+
+	public Proveedor recuperarProveedor(String ident) throws KrakedevException {
+		Connection con = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		Proveedor prov = new Proveedor();
+		TipoDocumento tp = new TipoDocumento();
+		try {
+			con = ConexionBDD.obtenerConexion();
+			ps = con.prepareStatement(
+					"select prov.identificador,prov.tipo_documento, td.descripcion as descripcion_td,prov.nombre as nombre_prov,\r\n"
+							+ "prov.telefono, prov.correo, prov.direccion\r\n"
+							+ "from proveedores prov, tipo_documento td\r\n"
+							+ "where prov.tipo_documento = td.codigo and prov.identificador = ?");
+			ps.setString(1, "" + ident + "");
+			rs = ps.executeQuery();
+			if (rs.next()) {
+				String identificador = rs.getString("identificador");
+				String tipoDoc = rs.getString("tipo_documento");
+				String descripcionTd = rs.getString("descripcion_td");
+				String nombreProv = rs.getString("nombre_prov");
+				String telefono = rs.getString("telefono");
+				String correo = rs.getString("correo");
+				String direccion = rs.getString("direccion");
+				tp.setCodigo(tipoDoc);
+				tp.setDescripcion(descripcionTd);
+				prov.setIdentificador(identificador);
+				prov.setTipoDocumento(tp);
+				prov.setNombre(nombreProv);
+				prov.setTelefono(telefono);
+				prov.setCorreo(correo);
+				prov.setDireccion(direccion);
+			}
+		} catch (KrakedevException e) {
+			e.printStackTrace();
+			throw e;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new KrakedevException("Error al consultar. Detalle: " + e.getMessage());
+		}finally {
+			if (con != null) {
+				try {
+					con.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return prov;
 	}
 }

@@ -1,6 +1,7 @@
 package com.krakedev.inventarios.entidades;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 
 public class Producto {
 	private int codigo;
@@ -10,6 +11,7 @@ public class Producto {
 	private boolean tieneIVA;
 	private BigDecimal coste;
 	private Categoria categoria;
+	private ArrayList<CategoriaUDM> categorias;
 	private int stock;
 	public Producto() {}
 	public Producto(int codigo, String nombre, UnidadMedida udm, BigDecimal precioVenta, boolean tieneIVA,
@@ -71,6 +73,13 @@ public class Producto {
 	}
 	public void setStock(int stock) {
 		this.stock = stock;
+	}
+	
+	public ArrayList<CategoriaUDM> getCategorias() {
+		return categorias;
+	}
+	public void setCategorias(ArrayList<CategoriaUDM> categorias) {
+		this.categorias = categorias;
 	}
 	@Override
 	public String toString() {

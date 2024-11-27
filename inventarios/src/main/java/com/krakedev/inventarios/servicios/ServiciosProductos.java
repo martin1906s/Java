@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -37,10 +38,39 @@ public class ServiciosProductos {
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response crear(Producto producto) {
-		ProductosBDD prov = new ProductosBDD();
+		ProductosBDD prod = new ProductosBDD();
 		try {
-			prov.insertar(producto);
+			prod.insertar(producto);
 			return Response.ok().build();
+		} catch (KrakedevException e) {
+			e.printStackTrace();
+			return Response.serverError().build();
+		}
+	}
+	
+	@Path("actualizar")
+	@PUT
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response actualizar(Producto prod) {
+		ProductosBDD prodBDD = new ProductosBDD();
+		try {
+			prodBDD.actualizarProducto(prod);
+			return Response.ok().build();
+		} catch (KrakedevException e) {
+			e.printStackTrace();
+			return Response.serverError().build();
+		}
+	}
+	
+	@Path("buscarCodigor/{codPro}")
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response buscarPorIdentificador(@PathParam("codPro") int codPro){
+		ProductosBDD prodBDD = new ProductosBDD(); 
+		Producto prod = null;
+		try {
+			prod = prodBDD.buscarProductoPorCodigo(codPro);
+			return Response.ok(prod).build();
 		} catch (KrakedevException e) {
 			e.printStackTrace();
 			return Response.serverError().build();

@@ -1,20 +1,20 @@
 package com.krakedev.inventarios.entidades;
 
 public class Categoria {
-	private int codigo;
+	private Integer codigo;
 	private String nombre;
 	private Categoria categoriaPadre;
 	public Categoria() {}
-	public Categoria(int codigo, String nombre, Categoria categoriaPadre) {
+	public Categoria(Integer codigo, String nombre, Categoria categoriaPadre) {
 		super();
 		this.codigo = codigo;
 		this.nombre = nombre;
 		this.categoriaPadre = categoriaPadre;
 	}
-	public int getCodigo() {
+	public Integer getCodigo() {
 		return codigo;
 	}
-	public void setCodigo(int codigo) {
+	public void setCodigo(Integer codigo) {
 		this.codigo = codigo;
 	}
 	public String getNombre() {

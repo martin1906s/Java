@@ -20,7 +20,7 @@ public class ServiciosProveedores {
 	@Path("buscar/{subcadena}")
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response buscar(@PathParam("subcadena") String subcadena){
+	public Response buscarNombre(@PathParam("subcadena") String subcadena){
 		ProveedoresBDD provBDD = new ProveedoresBDD(); 
 		ArrayList<Proveedor> proveedores = null;
 		try {
@@ -40,6 +40,21 @@ public class ServiciosProveedores {
 		try {
 			prov.insertar(proveedor);
 			return Response.ok().build();
+		} catch (KrakedevException e) {
+			e.printStackTrace();
+			return Response.serverError().build();
+		}
+	}
+	
+	@Path("buscarIdentificador/{identificador}")
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response buscarPorIdentificador(@PathParam("identificador") String identificador){
+		ProveedoresBDD provBDD = new ProveedoresBDD(); 
+		Proveedor prov = null;
+		try {
+			prov = provBDD.recuperarProveedor(identificador);
+			return Response.ok(prov).build();
 		} catch (KrakedevException e) {
 			e.printStackTrace();
 			return Response.serverError().build();
